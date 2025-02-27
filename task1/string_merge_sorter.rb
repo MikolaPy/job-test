@@ -1,7 +1,3 @@
-require 'tempfile'
-require './min_heap_sorter'
-require './transaction'
-
 class StringMergeSorter
   attr_reader :large_enum, :chunk_size, :files
   include Enumerable
@@ -78,31 +74,3 @@ class StringMergeSorter
     file.path
   end
 end
-
-
-lines = [
-  '2023-09-03T12:45:00Z,txn12345,user987,5025',
-  '2023-09-03T12:45:00Z,txn12345,user987,100.25',
-  '2023-09-03T12:45:00Z,txn12345,user987,500.25',
-  '2023-09-03T12:45:00Z,txn12345,user987,50.25',
-  '2023-09-03T12:45:00Z,txn12345,user987,20.21',
-  '2023-09-03T12:45:00Z,txn12345,user987,52.25',
-  '2023-09-03T12:45:00Z,txn12345,user987,550.25',
-  '2023-09-03T12:45:00Z,txn12345,user987,54.25',
-]
-
-file = Tempfile.new('large_input')
-file.puts(lines)
-file.close
-file.path
-
-
-def sort_file(input_file, output_file)
-  file_enum = File.readlines(input_file).each
-
-  File.open(output_file, 'w') do |output|
-    StringMergeSorter.new(file_enum, 2).each { |line| p line; output.puts line }
-  end
-end
-
-sort_file(file, 'sorted_input.txt')
